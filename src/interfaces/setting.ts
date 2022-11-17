@@ -1,5 +1,5 @@
 export interface ISetting {
-  platform: 'github' | 'coding' | 'sftp' | 'gitee' | 'netlify'
+  platform: 'github' | 'coding' | 'sftp' | 'gitee' | 'netlify' | 'oss'
   domain: string
   repository: string
   branch: string
@@ -18,7 +18,16 @@ export interface ISetting {
   enabledProxy: 'direct' | 'proxy'
   netlifyAccessToken: string
   netlifySiteId: string
-  [index: string]: string
+
+  // OSSConfigs
+  ossAccessKeyId: '',
+  ossAccessKeySecret: '',
+  ossBucket: '',
+  ossRegion: '',
+  ossEndpoint: '',
+  ossPrefix: '',
+  ossCname: false,
+  [index: string]: string | boolean | number
 }
 
 export interface IDisqusSetting {

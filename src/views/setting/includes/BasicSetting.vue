@@ -8,6 +8,7 @@
           <a-radio value="coding">Coding Pages</a-radio>
           <a-radio value="gitee">Gitee Pages</a-radio>
           <a-radio value="sftp">SFTP</a-radio>
+          <a-radio value="sftp">OSS</a-radio>
         </a-radio-group>
       </a-form-item>
       <a-form-item :label="$t('domain')" :labelCol="formLayout.label" :wrapperCol="formLayout.wrapper" :colon="false">
@@ -101,6 +102,16 @@
           <a-input v-model="form.proxyPort" />
         </a-form-item>
       </template>
+      <template v-if="['oss'].includes(form.enabledProxy) && form.platform !== 'oss'">
+        <a-form-item :label="$t('ProxyAddress')" :labelCol="formLayout.label" :wrapperCol="formLayout.wrapper" :colon="false">
+          <a-input-group compact>
+            <a-input v-model="form.proxyPath" />
+          </a-input-group>
+        </a-form-item>
+        <a-form-item :label="$t('ProxyPort')" :labelCol="formLayout.label" :wrapperCol="formLayout.wrapper" :colon="false">
+          <a-input v-model="form.proxyPort" />
+        </a-form-item>
+      </template>
       <footer-box>
         <div class="flex justify-between">
           <a-button :disabled="!canSubmit" :loading="detectLoading" @click="remoteDetect" style="margin-right: 16px;">{{ $t('testConnection') }}</a-button>
@@ -112,12 +123,12 @@
 </template>
 
 <script lang="ts">
+import ga from '../../../helpers/analytics'
+import FooterBox from '../../../components/FooterBox/Index.vue'
+import { ISetting } from '../../../interfaces/setting'
 import { ipcRenderer, IpcRendererEvent } from 'electron'
 import { Vue, Component, Watch } from 'vue-property-decorator'
 import { State } from 'vuex-class'
-import FooterBox from '../../../components/FooterBox/Index.vue'
-import ga from '../../../helpers/analytics'
-import { ISetting } from '../../../interfaces/setting'
 
 @Component({
   components: {
@@ -158,6 +169,13 @@ export default class BasicSetting extends Vue {
     enabledProxy: 'direct',
     netlifyAccessToken: '',
     netlifySiteId: '',
+    ossAccessKeyId: '',
+    ossAccessKeySecret: '',
+    ossBucket: '',
+    ossRegion: '',
+    ossEndpoint: '',
+    ossPrefix: '',
+    ossCname: false,
   }
 
   remoteType = 'password'
@@ -169,7 +187,12 @@ export default class BasicSetting extends Vue {
       && form.branch
       && form.username
       && form.token
-    const pagesPlatfomValid = baseValid && (form.platform === 'gitee' || form.platform === 'github' || (form.platform === 'coding' && form.tokenUsername))
+    const pagesPlatfomValid = baseValid && (
+      form.platform === 'gitee'
+      || form.platform === 'github'
+      || form.platform === 'oss'
+      || (form.platform === 'coding' && form.tokenUsername)
+    )
 
     const sftpPlatformValid = ['sftp'].includes(form.platform)
       && form.port

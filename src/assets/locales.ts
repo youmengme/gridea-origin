@@ -1,3 +1,13 @@
+const ossConfigs = {
+  ossAccessKeyId: 'accessKeyId',
+  ossAccessKeySecret: 'accessKeySecret',
+  ossBucket: 'bucket',
+  ossRegion: 'region',
+  ossEndpoint: 'endpoint',
+  ossPrefix: 'prefix',
+  ossCname: 'cname',
+}
+
 const message = {
   zhHans: {
     preview: '预 览',
@@ -126,6 +136,8 @@ const message = {
     Proxy: 'HTTP代理',
     ProxyAddress: '地址',
     ProxyPort: '端口',
+
+    ...ossConfigs,
   },
   zh_TW: {
     preview: '預 覽',
@@ -255,6 +267,8 @@ const message = {
     Proxy: 'HTTP代理',
     ProxyAddress: '地址',
     ProxyPort: '端口',
+
+    ...ossConfigs,
   },
   en: {
     preview: 'Preview',
@@ -383,6 +397,8 @@ const message = {
     Proxy: 'HTTP Proxy',
     ProxyAddress: 'Proxy Address',
     ProxyPort: 'Proxy Port',
+
+    ...ossConfigs,
   },
   fr_FR: {
     preview: 'Aperçu',
@@ -511,6 +527,8 @@ const message = {
     Proxy: 'HTTP Proxy',
     ProxyAddress: 'Proxy Address',
     ProxyPort: 'Proxy Port',
+
+    ...ossConfigs,
   },
   ja_JP: {
     preview: 'プレビュー',
@@ -639,6 +657,8 @@ const message = {
     Proxy: 'HTTPプロキシ',
     ProxyAddress: 'プロキシアドレス',
     ProxyPort: 'プロキシポート',
+
+    ...ossConfigs,
   },
 }
 

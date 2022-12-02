@@ -8,10 +8,15 @@
           <a-radio value="coding">Coding Pages</a-radio>
           <a-radio value="gitee">Gitee Pages</a-radio>
           <a-radio value="sftp">SFTP</a-radio>
-          <a-radio value="sftp">OSS</a-radio>
+          <a-radio value="oss">OSS</a-radio>
         </a-radio-group>
       </a-form-item>
-      <a-form-item :label="$t('domain')" :labelCol="formLayout.label" :wrapperCol="formLayout.wrapper" :colon="false">
+      <a-form-item
+        :label="$t('domain')"
+        :labelCol="formLayout.label"
+        :wrapperCol="formLayout.wrapper"
+        :colon="false"
+      >
         <a-input-group compact>
           <a-select v-model="protocol" style="width: 96px">
             <a-select-option value="https://">https://</a-select-option>
@@ -86,30 +91,53 @@
           <a-input v-model="form.remotePath" />
         </a-form-item>
       </template>
-      <a-form-item v-if="form.platform !== 'sftp'" :label="$t('Proxy')" :labelCol="formLayout.label" :wrapperCol="formLayout.wrapper" :colon="false">
+      <a-form-item :label="$t('Proxy')" :labelCol="formLayout.label"
+                   :wrapperCol="formLayout.wrapper" :colon="false">
         <a-radio-group name="Proxy" v-model="form.enabledProxy">
           <a-radio value="direct">Direct</a-radio>
           <a-radio value="proxy">Proxy</a-radio>
         </a-radio-group>
       </a-form-item>
-      <template v-if="['proxy'].includes(form.enabledProxy) && form.platform !== 'sftp'">
-        <a-form-item :label="$t('ProxyAddress')" :labelCol="formLayout.label" :wrapperCol="formLayout.wrapper" :colon="false">
+      <template v-if="['proxy'].includes(form.enabledProxy) && !['sftp'].includes(form.platform)">
+        <a-form-item :label="$t('ProxyAddress')" :labelCol="formLayout.label" :wrapperCol="formLayout.wrapper"
+                     :colon="false">
           <a-input-group compact>
             <a-input v-model="form.proxyPath" />
           </a-input-group>
         </a-form-item>
-        <a-form-item :label="$t('ProxyPort')" :labelCol="formLayout.label" :wrapperCol="formLayout.wrapper" :colon="false">
+        <a-form-item :label="$t('ProxyPort')" :labelCol="formLayout.label" :wrapperCol="formLayout.wrapper"
+                     :colon="false">
           <a-input v-model="form.proxyPort" />
         </a-form-item>
       </template>
-      <template v-if="['oss'].includes(form.enabledProxy) && form.platform !== 'oss'">
-        <a-form-item :label="$t('ProxyAddress')" :labelCol="formLayout.label" :wrapperCol="formLayout.wrapper" :colon="false">
-          <a-input-group compact>
-            <a-input v-model="form.proxyPath" />
-          </a-input-group>
+      <template v-if="form.platform === 'oss'">
+        <a-form-item :label="$t('ossAccessKeyId')" :labelCol="formLayout.label" :wrapperCol="formLayout.wrapper"
+                     :colon="false">
+          <a-input v-model="form.ossAccessKeyId" />
         </a-form-item>
-        <a-form-item :label="$t('ProxyPort')" :labelCol="formLayout.label" :wrapperCol="formLayout.wrapper" :colon="false">
-          <a-input v-model="form.proxyPort" />
+        <a-form-item :label="$t('ossAccessKeySecret')" :labelCol="formLayout.label" :wrapperCol="formLayout.wrapper"
+                     :colon="false">
+          <a-input v-model="form.ossAccessKeySecret" />
+        </a-form-item>
+        <a-form-item :label="$t('ossBucket')" :labelCol="formLayout.label" :wrapperCol="formLayout.wrapper"
+                     :colon="false">
+          <a-input v-model="form.ossBucket" />
+        </a-form-item>
+        <a-form-item :label="$t('ossRegion')" :labelCol="formLayout.label" :wrapperCol="formLayout.wrapper"
+                     :colon="false">
+          <a-input v-model="form.ossRegion" />
+        </a-form-item>
+        <a-form-item :label="$t('ossEndpoint')" :labelCol="formLayout.label" :wrapperCol="formLayout.wrapper"
+                     :colon="false">
+          <a-input v-model="form.ossEndpoint" />
+        </a-form-item>
+        <a-form-item :label="$t('ossPrefix')" :labelCol="formLayout.label" :wrapperCol="formLayout.wrapper"
+                     :colon="false">
+          <a-input v-model="form.ossPrefix" />
+        </a-form-item>
+        <a-form-item :label="$t('ossCname')" :labelCol="formLayout.label" :wrapperCol="formLayout.wrapper"
+                     :colon="false">
+          <a-switch v-model="form.ossCname" />
         </a-form-item>
       </template>
       <footer-box>
@@ -123,12 +151,12 @@
 </template>
 
 <script lang="ts">
+import { ipcRenderer, IpcRendererEvent } from 'electron'
+import { Component, Vue, Watch } from 'vue-property-decorator'
+import { State } from 'vuex-class'
 import ga from '../../../helpers/analytics'
 import FooterBox from '../../../components/FooterBox/Index.vue'
 import { ISetting } from '../../../interfaces/setting'
-import { ipcRenderer, IpcRendererEvent } from 'electron'
-import { Vue, Component, Watch } from 'vue-property-decorator'
-import { State } from 'vuex-class'
 
 @Component({
   components: {
@@ -253,6 +281,29 @@ export default class BasicSetting extends Vue {
       form.privateKey = ''
     } else {
       form.password = ''
+    }
+    console.log('form', form)
+    if (form.platform === 'oss') {
+      if (!form.ossAccessKeyId) {
+        this.$message.error('ossAccessKeyId must be a string')
+        return
+      }
+      if (!form.ossAccessKeySecret) {
+        this.$message.error('ossAccessKeySecret must be a string')
+        return
+      }
+      if (!form.ossBucket) {
+        this.$message.error('ossBucket must be a string')
+        return
+      }
+      if (!form.ossRegion) {
+        this.$message.error('ossRegion must be a string')
+        return
+      }
+      if (!form.ossEndpoint) {
+        this.$message.error('ossEndpoint must be a string')
+        return
+      }
     }
 
     ipcRenderer.send('setting-save', form)

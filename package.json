@@ -17,19 +17,21 @@
   "repository": "https://github.com/getgridea/gridea",
   "scripts": {
     "electron:build": "vue-cli-service electron:build",
-    "electron:serve": "vue-cli-service electron:serve",
+    "dev": "vue-cli-service electron:serve",
     "postinstall": "electron-builder install-app-deps",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
     "@iktakahiro/markdown-it-katex": "^3.1.0",
     "@sentry/electron": "^1.2.0",
+    "@types/ali-oss": "^6.16.6",
+    "ali-oss": "^6.17.1",
     "ant-design-vue": "^1.3.5",
     "axios": "^0.27.2",
     "bluebird": "^3.5.3",
     "ejs": "^2.6.1",
     "electron-google-analytics": "^0.1.0",
-    "electron-updater": "^4.2.0",
+    "electron-updater": "^5.0.0",
     "feed": "^2.0.4",
     "fs-extra": "^7.0.1",
     "gray-matter": "^4.0.1",
@@ -107,12 +109,12 @@
     "less-loader": "^4.1.0",
     "lint-staged": "^8.1.5",
     "markdown-it-task-lists": "^2.1.1",
+    "patch-package": "^6.5.0",
     "postcss-import": "^12.0.1",
     "tailwindcss": "^1.1.4",
     "typescript": "^3.0.0",
     "vue-cli-plugin-electron-builder": "2.0.0-beta.2",
-    "vue-template-compiler": "^2.6.10",
-    "patch-package": "^6.5.0"
+    "vue-template-compiler": "^2.6.10"
   },
   "main": "background.js",
   "engines": {

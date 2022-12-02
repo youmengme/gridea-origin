@@ -3,15 +3,17 @@ import Deploy from '../deploy'
 import Renderer from '../renderer'
 import SftpDeploy from '../plugins/deploys/sftp'
 import NetlifyDeploy from '../plugins/deploys/netlify'
+import Oss from '../plugins/deploys/oss'
 
 export default class DeployEvents {
   constructor(appInstance: any) {
     const { platform } = appInstance.db.setting
-    
+
     const deploy = new Deploy(appInstance)
     const sftp = new SftpDeploy(appInstance)
     const renderer = new Renderer(appInstance)
     const netlify = new NetlifyDeploy(appInstance)
+    const oss = new Oss(appInstance)
 
     ipcMain.removeAllListeners('site-publish')
     ipcMain.removeAllListeners('site-published')
@@ -26,12 +28,13 @@ export default class DeployEvents {
         'gitee': deploy,
         'sftp': sftp,
         'netlify': netlify,
+        'oss': oss,
       } as any)[platform]
-      
+
       // render
       renderer.db.themeConfig.domain = renderer.db.setting.domain
       await renderer.renderAll()
-      
+
       // publish
       const result = await client.publish()
       event.sender.send('site-published', result)
@@ -44,8 +47,9 @@ export default class DeployEvents {
         'gitee': deploy,
         'sftp': sftp,
         'netlify': netlify,
+        'oss': oss,
       } as any)[platform]
-      
+
       const result = await client.remoteDetect()
       event.sender.send('remote-detected', result)
     })

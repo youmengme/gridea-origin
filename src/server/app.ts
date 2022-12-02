@@ -13,12 +13,18 @@ import Deploy from './deploy'
 
 import { IApplicationDb, IApplicationSetting } from './interfaces/application'
 import {
-  DEFAULT_POST_PAGE_SIZE, DEFAULT_ARCHIVES_PAGE_SIZE, DEFAULT_FEED_COUNT, DEFAULT_ARCHIVES_PATH, DEFAULT_POST_PATH, DEFAULT_TAG_PATH,
+  DEFAULT_POST_PAGE_SIZE,
+  DEFAULT_ARCHIVES_PAGE_SIZE,
+  DEFAULT_FEED_COUNT,
+  DEFAULT_ARCHIVES_PATH,
+  DEFAULT_POST_PATH,
+  DEFAULT_TAG_PATH,
 } from '../helpers/constants'
 // eslint-disable-next-line
 declare const __static: string
 
 export default class App {
+  // @ts-ignore
   mainWindow: BrowserWindow
 
   app: any
@@ -86,6 +92,14 @@ export default class App {
         enabledProxy: 'direct',
         netlifySiteId: '',
         netlifyAccessToken: '',
+
+        ossAccessKeyId: '',
+        ossAccessKeySecret: '',
+        ossBucket: '',
+        ossRegion: '',
+        ossEndpoint: '',
+        ossPrefix: '',
+        ossCname: false,
       },
       commentSetting: {
         showComment: false,
